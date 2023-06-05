@@ -51,29 +51,26 @@ def main():
     complete_inventory = {}
 
     # Ask user for item information
-    num = 1
     for i, value in enumerate(barcode_value):
 
         # Get the item information from user
-        name = input(f"What is the name of item {num}? ")
-        price = input(f"What is the price of the item {num}? ")
-        category = input(f"What is the category of item {num}? ")
+        name = input(f"What is the name of item {i}? ")
+        price = input(f"What is the price of the item {i}? ")
+        category = input(f"What is the category of item {i}? ")
         item = Item(name, price, category, value)
         
         # Add the item to the complete inventory
         complete_inventory[item.name] = {
-            "price": item.price,
+            "barcode": item.barcode,
+            "barcode_path": f"assets/{item.name}/{value}.svg",
             "category": item.category,
             "image_path": f"assets/{item.name}/{item.name}.jpg",
-            "barcode": item.barcode,
-            "barcode_path": f"assets/{item.name}/{value}.svg"
+            "price": item.price,
         }
 
         # Move the barcode to the assets folder
         os.makedirs(f"assets/{item.name}", exist_ok=True)
         shutil.move(barcode_path[i], f"assets/{item.name}")
-
-        num += 1
 
     # Save the data
     with open("data.json", "w") as f:
