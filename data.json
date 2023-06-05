@@ -1,0 +1,17 @@
+{
+    "apple": {
+        "price": "2",
+        "category": "produce",
+        "barcode": "676789198118"
+    },
+    "donut": {
+        "price": "4",
+        "category": "baked good",
+        "barcode": "890167621929"
+    },
+    "banana": {
+        "price": "7",
+        "category": "produce",
+        "barcode": "376955753600"
+    }
+}
