@@ -5,7 +5,7 @@ import os
 import datetime
 
 '''
-    This script generates barcodes and saves them as png files.
+    This script generates barcodes and saves them as svg files.
     This script does not need to be packaged with the application.
 '''
 
