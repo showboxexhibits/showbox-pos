@@ -2,16 +2,22 @@
     "apple": {
         "price": "2",
         "category": "produce",
-        "barcode": "676789198118"
+        "image_path": "assets/apple/apple.jpg",
+        "barcode": "421966232793",
+        "barcode_path": "assets/apple/421966232793.svg"
     },
-    "donut": {
-        "price": "4",
-        "category": "baked good",
-        "barcode": "890167621929"
+    "milk": {
+        "price": "7",
+        "category": "dairy",
+        "image_path": "assets/milk/milk.jpg",
+        "barcode": "525769401487",
+        "barcode_path": "assets/milk/525769401487.svg"
     },
     "banana": {
-        "price": "7",
+        "price": "4",
         "category": "produce",
-        "barcode": "376955753600"
+        "image_path": "assets/banana/banana.jpg",
+        "barcode": "796163565577",
+        "barcode_path": "assets/banana/796163565577.svg"
     }
 }

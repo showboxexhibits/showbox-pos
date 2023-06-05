@@ -64,7 +64,9 @@ def main():
         complete_inventory[item.name] = {
             "price": item.price,
             "category": item.category,
-            "barcode": item.barcode
+            "image_path": f"assets/{item.name}/{item.name}.jpg",
+            "barcode": item.barcode,
+            "barcode_path": f"assets/{item.name}/{value}.svg"
         }
 
         # Move the barcode to the assets folder
