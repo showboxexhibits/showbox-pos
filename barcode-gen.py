@@ -54,9 +54,9 @@ def main():
     for i, value in enumerate(barcode_value):
 
         # Get the item information from user
-        name = input(f"What is the name of item {i}? ")
-        price = input(f"What is the price of the item {i}? ")
-        category = input(f"What is the category of item {i}? ")
+        name = input(f"What is the name of item {i+1}? ")
+        price = input(f"What is the price of the item {i+1}? ")
+        category = input(f"What is the category of item {i+1}? ")
         item = Item(name, price, category, value)
         
         # Add the item to the complete inventory
