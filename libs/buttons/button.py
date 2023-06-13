@@ -1,51 +1,23 @@
-import PyQt5.QtWidgets
-
-class Action:
-    def __init__(self):
-        self.name = name
-        self.action = action
-    def delete_last():
-        
-        
-
-
-
-
-
-def delete_last():
-    print("Deleted")
+from PyQt5 import QtWidgets
 
 def clear_all():
-    print("Cleared all")
+    print("Clicked Clear All")
 
-def init_buttons_old(window,**kwargs):
-    deleteLastButton = QtWidgets.QPushButton(window)
-    deleteLastButton.setText("Delete Last")
-    deleteLastButton.move(50,50)
-    deleteLastButton.clicked.connect(delete_last)
+def delete_last(window):
+    print("Clicked Delete Last")
 
-    clearAllButton = QtWidgets.QPushButton(window)
-    clearAllButton.setText("Clear All")
-    clearAllButton.move(100,100)
-    clearAllButton.clicked.connect(clear_all)
-
-
-def make_clear_all(window):
-    clearAllButton = QtWidgets.QPushButton(window)
-    clearAllButton.setText("Clear All")
-    clearAllButton.move(100,100)
-    clearAllButton.click.connect(clear_all)
-def make_delete_last(window,name):
-
-def init_buttons(window,names):
-    buttons = []
-    for i in name:
-        if name == 'clearAllButton':
-            make_clear_all(i)
-            buttons.append(i)
-        if name == 'deleteLastButton':
-            make_delete_all(i)
-            buttons.append(i)
-        else:
-            pass
-    return buttons
+def make_button(window, name):
+    if name == "deleteLast":
+        b = QtWidgets.QPushButton(window)
+        b.setText("Delete Last")
+        b.move(50, 50)
+        b.clicked.connect(delete_last)
+        return b
+    if name == "clearAll":
+        b = QtWidgets.QPushButton(window)
+        b.setText("Clear All")
+        b.move(50, 20)
+        b.clicked.connect(clear_all)
+        return b
+    else:
+        return "error"

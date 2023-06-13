@@ -9,21 +9,42 @@
 '''
 
 import os
+import sys
 from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import QMainWindow, QApplication
-
-def init_buttons():
-    pass    
+from libs.buttons.button import make_button
 
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
+        self.setAnimated(True)
+        self.setObjectName('MainWindow')
+        stylesheet = """
+    #MainWindow{
+        background-image: url(assets/main-screen/main-screen.png);
+        background-repeat: no-repeat;
+        background-position: center;
+    }
+        """
 
+        self.setStyleSheet(stylesheet)
+
+        make_button(self, "deleteLast")
+        make_button(self, "clearAll")
+        b = QtWidgets.QPushButton(self)
+        b.setText("Close")
+        b.move(200,200)
+        b.clicked.connect(close_app)
+
+def close_app():
+    sys.exit()
 
 app = QApplication([])
 
 # Assigning the MainWindow to a variable and calling .show() draws the window on screen.
 window = MainWindow()
+window.setGeometry(0,0,800,800)
+window.showFullScreen()
 window.show()
 
 # Finally, after all assignments have been made, the app is executed.
