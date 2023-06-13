@@ -9,11 +9,13 @@ import os, datetime, json, shutil
 '''
 # Each item will have a name, price, category, and barcode
 class Item:
-    def __init__(self, name, price, category, barcode):
+    def __init__(self, name, price, category, barcode, barcode_path, image_path):
         self.name = name
         self.price = price
         self.category = category
         self.barcode = barcode
+        self.barcode_path = barcode_path
+        self.image_path = image_path
 
 # Generate barcodes and save them as svg files
 def barcode_gen(num_barcodes):
@@ -27,7 +29,7 @@ def barcode_gen(num_barcodes):
     os.makedirs(output_dir, exist_ok=True)
 
     # Generate num barcodes and save them as svg files, starting from 1
-    for i in range(1, num_barcodes + 1):
+    for i in num_barcodes:
         fullname = str(randint(100000000000, 999999999999))
         barcode_location = f"{output_dir}/{fullname}.svg"
         with open(barcode_location, "wb") as f:
@@ -42,10 +44,10 @@ def barcode_gen(num_barcodes):
 def main():
     
     # Ask user how many barcodes they want to generate
-    total_barcodes = input("How many barcodes do you want to generate? ")
+    total_barcodes = os.listdir('pngs/Foods')
 
     # Generate total_barcodes barcodes and save them as svg files, starting from 1
-    barcode_path, barcode_value, temp = barcode_gen(int(total_barcodes))
+    barcode_path, barcode_value, temp = barcode_gen(total_barcodes)
 
     # Initialize the item list
     complete_inventory = {}
@@ -54,23 +56,32 @@ def main():
     for i, value in enumerate(barcode_value):
 
         # Get the item information from user
-        name = input(f"What is the name of item {i+1}? ")
-        price = input(f"What is the price of the item {i+1}? ")
-        category = input(f"What is the category of item {i+1}? ")
-        item = Item(name, price, category, value)
-        
+        name = (total_barcodes[i].split('.'))[0]
+        price = input(f"What is the price of item {name}? ")
+        category = input(f"What is the category of item {name}? ")
+        barcode = value
+        item = Item(name,
+                    price,
+                    category,
+                    barcode,
+                    barcode_path=f"assets/{name}/{barcode}.svg",
+                    image_path=f"assets/{name}.png"
+                    )
+
+
         # Add the item to the complete inventory
         complete_inventory[item.name] = {
             "barcode": item.barcode,
-            "barcode_path": f"assets/{item.name}/{value}.svg",
+            "barcode_path": item.barcode_path,
             "category": item.category,
-            "image_path": f"assets/{item.name}/{item.name}.jpg",
+            "image_path": item.image_path,
             "price": item.price,
         }
 
         # Move the barcode to the assets folder
         os.makedirs(f"assets/{item.name}", exist_ok=True)
         shutil.move(barcode_path[i], f"assets/{item.name}")
+        shutil.move(f"pngs/Foods/{item.name}.png", f"assets/{item.name}")
 
     # Save the data
     with open("data.json", "w") as f:
