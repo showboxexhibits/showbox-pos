@@ -1,210 +1,210 @@
 {
     "cake": {
-        "barcode": "368328880690",
-        "barcode_path": "assets/cake/368328880690.svg",
+        "barcode": "416050438393",
+        "barcode_path": "assets/cake/416050438393.png",
         "category": "baked good",
         "image_path": "assets/cake.png",
         "price": "10"
     },
     "onions": {
-        "barcode": "120337105847",
-        "barcode_path": "assets/onions/120337105847.svg",
+        "barcode": "898985812701",
+        "barcode_path": "assets/onions/898985812701.png",
         "category": "produce",
         "image_path": "assets/onions.png",
-        "price": "4"
+        "price": "3"
     },
     "spaghetti": {
-        "barcode": "118393624643",
-        "barcode_path": "assets/spaghetti/118393624643.svg",
+        "barcode": "564614782785",
+        "barcode_path": "assets/spaghetti/564614782785.png",
         "category": "dry good",
         "image_path": "assets/spaghetti.png",
         "price": "8"
     },
     "tortilla": {
-        "barcode": "984194621412",
-        "barcode_path": "assets/tortilla/984194621412.svg",
-        "category": "dry good",
+        "barcode": "431513970190",
+        "barcode_path": "assets/tortilla/431513970190.png",
+        "category": "baked good",
         "image_path": "assets/tortilla.png",
-        "price": "5"
+        "price": "4"
     },
     "bread": {
-        "barcode": "681008389859",
-        "barcode_path": "assets/bread/681008389859.svg",
+        "barcode": "270991236386",
+        "barcode_path": "assets/bread/270991236386.png",
         "category": "baked good",
         "image_path": "assets/bread.png",
         "price": "3"
     },
     "macncheese": {
-        "barcode": "192432000013",
-        "barcode_path": "assets/macncheese/192432000013.svg",
+        "barcode": "961350343652",
+        "barcode_path": "assets/macncheese/961350343652.png",
         "category": "dry good",
         "image_path": "assets/macncheese.png",
-        "price": "6"
+        "price": "5"
     },
     "potato": {
-        "barcode": "279963534865",
-        "barcode_path": "assets/potato/279963534865.svg",
+        "barcode": "801245665211",
+        "barcode_path": "assets/potato/801245665211.png",
         "category": "produce",
         "image_path": "assets/potato.png",
-        "price": "2"
+        "price": "4"
     },
     "corn": {
-        "barcode": "208465310207",
-        "barcode_path": "assets/corn/208465310207.svg",
+        "barcode": "725019564851",
+        "barcode_path": "assets/corn/725019564851.png",
         "category": "produce",
         "image_path": "assets/corn.png",
         "price": "3"
     },
     "cookies": {
-        "barcode": "380390948740",
-        "barcode_path": "assets/cookies/380390948740.svg",
+        "barcode": "317649442069",
+        "barcode_path": "assets/cookies/317649442069.png",
         "category": "baked good",
         "image_path": "assets/cookies.png",
-        "price": "5"
-    },
-    "cereal": {
-        "barcode": "697753014146",
-        "barcode_path": "assets/cereal/697753014146.svg",
-        "category": "dry good",
-        "image_path": "assets/cereal.png",
         "price": "6"
     },
+    "cereal": {
+        "barcode": "227384655531",
+        "barcode_path": "assets/cereal/227384655531.png",
+        "category": "dry good",
+        "image_path": "assets/cereal.png",
+        "price": "7"
+    },
     "yogurt": {
-        "barcode": "555299875524",
-        "barcode_path": "assets/yogurt/555299875524.svg",
+        "barcode": "898797031605",
+        "barcode_path": "assets/yogurt/898797031605.png",
         "category": "dairy",
         "image_path": "assets/yogurt.png",
-        "price": "4"
+        "price": "5"
     },
     "chicken": {
-        "barcode": "591960163447",
-        "barcode_path": "assets/chicken/591960163447.svg",
+        "barcode": "974043021478",
+        "barcode_path": "assets/chicken/974043021478.png",
         "category": "poultry",
         "image_path": "assets/chicken.png",
-        "price": "9"
+        "price": "8"
     },
     "steak": {
-        "barcode": "880720828163",
-        "barcode_path": "assets/steak/880720828163.svg",
+        "barcode": "355358414707",
+        "barcode_path": "assets/steak/355358414707.png",
         "category": "meat",
         "image_path": "assets/steak.png",
-        "price": "12"
+        "price": "11"
     },
     "milk": {
-        "barcode": "279036492835",
-        "barcode_path": "assets/milk/279036492835.svg",
+        "barcode": "668224243418",
+        "barcode_path": "assets/milk/668224243418.png",
         "category": "dairy",
         "image_path": "assets/milk.png",
-        "price": "4"
+        "price": "7"
     },
     "eggs": {
-        "barcode": "748141882004",
-        "barcode_path": "assets/eggs/748141882004.svg",
+        "barcode": "140580666266",
+        "barcode_path": "assets/eggs/140580666266.png",
         "category": "poultry",
         "image_path": "assets/eggs.png",
-        "price": "3"
+        "price": "5"
     },
     "apple": {
-        "barcode": "391248608691",
-        "barcode_path": "assets/apple/391248608691.svg",
+        "barcode": "172690005402",
+        "barcode_path": "assets/apple/172690005402.png",
         "category": "produce",
         "image_path": "assets/apple.png",
         "price": "2"
     },
     "cheese": {
-        "barcode": "639936362766",
-        "barcode_path": "assets/cheese/639936362766.svg",
+        "barcode": "894758479915",
+        "barcode_path": "assets/cheese/894758479915.png",
         "category": "dairy",
         "image_path": "assets/cheese.png",
-        "price": "5"
+        "price": "3"
     },
     "rice": {
-        "barcode": "996772131058",
-        "barcode_path": "assets/rice/996772131058.svg",
+        "barcode": "572948657173",
+        "barcode_path": "assets/rice/572948657173.png",
         "category": "dry good",
         "image_path": "assets/rice.png",
-        "price": "3"
+        "price": "2"
     },
     "crackers": {
-        "barcode": "151888370784",
-        "barcode_path": "assets/crackers/151888370784.svg",
+        "barcode": "220123381548",
+        "barcode_path": "assets/crackers/220123381548.png",
         "category": "dry good",
         "image_path": "assets/crackers.png",
-        "price": "4"
+        "price": "5"
     },
     "avocado": {
-        "barcode": "637208546283",
-        "barcode_path": "assets/avocado/637208546283.svg",
+        "barcode": "464337309479",
+        "barcode_path": "assets/avocado/464337309479.png",
         "category": "produce",
         "image_path": "assets/avocado.png",
-        "price": "6"
-    },
-    "bagel": {
-        "barcode": "670441890967",
-        "barcode_path": "assets/bagel/670441890967.svg",
-        "category": "baked good",
-        "image_path": "assets/bagel.png",
-        "price": "5"
-    },
-    "hot-dogs": {
-        "barcode": "340372479197",
-        "barcode_path": "assets/hot-dogs/340372479197.svg",
-        "category": "meat",
-        "image_path": "assets/hot-dogs.png",
-        "price": "5"
-    },
-    "banana": {
-        "barcode": "792512879515",
-        "barcode_path": "assets/banana/792512879515.svg",
-        "category": "produce",
-        "image_path": "assets/banana.png",
-        "price": "3"
-    },
-    "pizza": {
-        "barcode": "802159654903",
-        "barcode_path": "assets/pizza/802159654903.svg",
-        "category": "dry good",
-        "image_path": "assets/pizza.png",
-        "price": "10"
-    },
-    "ketchup": {
-        "barcode": "410042804397",
-        "barcode_path": "assets/ketchup/410042804397.svg",
-        "category": "condiment",
-        "image_path": "assets/ketchup.png",
-        "price": "4"
-    },
-    "strawberry": {
-        "barcode": "298321197711",
-        "barcode_path": "assets/strawberry/298321197711.svg",
-        "category": "produce",
-        "image_path": "assets/strawberry.png",
-        "price": "5"
-    },
-    "peanut-butter": {
-        "barcode": "975780975918",
-        "barcode_path": "assets/peanut-butter/975780975918.svg",
-        "category": "condiment",
-        "image_path": "assets/peanut-butter.png",
-        "price": "6"
-    },
-    "juice": {
-        "barcode": "516827466928",
-        "barcode_path": "assets/juice/516827466928.svg",
-        "category": "beverage",
-        "image_path": "assets/juice.png",
         "price": "7"
     },
+    "bagel": {
+        "barcode": "927205795036",
+        "barcode_path": "assets/bagel/927205795036.png",
+        "category": "baked good",
+        "image_path": "assets/bagel.png",
+        "price": "8"
+    },
+    "hot-dogs": {
+        "barcode": "652839343446",
+        "barcode_path": "assets/hot-dogs/652839343446.png",
+        "category": "meat",
+        "image_path": "assets/hot-dogs.png",
+        "price": "10"
+    },
+    "banana": {
+        "barcode": "548134398026",
+        "barcode_path": "assets/banana/548134398026.png",
+        "category": "produce",
+        "image_path": "assets/banana.png",
+        "price": "4"
+    },
+    "pizza": {
+        "barcode": "679030772455",
+        "barcode_path": "assets/pizza/679030772455.png",
+        "category": "baked good",
+        "image_path": "assets/pizza.png",
+        "price": "12"
+    },
+    "ketchup": {
+        "barcode": "792636107528",
+        "barcode_path": "assets/ketchup/792636107528.png",
+        "category": "condiment",
+        "image_path": "assets/ketchup.png",
+        "price": "5"
+    },
+    "strawberry": {
+        "barcode": "775491564540",
+        "barcode_path": "assets/strawberry/775491564540.png",
+        "category": "produce",
+        "image_path": "assets/strawberry.png",
+        "price": "3"
+    },
+    "peanut-butter": {
+        "barcode": "344697733828",
+        "barcode_path": "assets/peanut-butter/344697733828.png",
+        "category": "condiment",
+        "image_path": "assets/peanut-butter.png",
+        "price": "5"
+    },
+    "juice": {
+        "barcode": "909872985371",
+        "barcode_path": "assets/juice/909872985371.png",
+        "category": "beverage",
+        "image_path": "assets/juice.png",
+        "price": "9"
+    },
     "fish": {
-        "barcode": "126770239868",
-        "barcode_path": "assets/fish/126770239868.svg",
+        "barcode": "900526703064",
+        "barcode_path": "assets/fish/900526703064.png",
         "category": "meat",
         "image_path": "assets/fish.png",
         "price": "9"
     },
     "soup": {
-        "barcode": "451900498666",
-        "barcode_path": "assets/soup/451900498666.svg",
+        "barcode": "855775780059",
+        "barcode_path": "assets/soup/855775780059.png",
         "category": "soup",
         "image_path": "assets/soup.png",
         "price": "5"

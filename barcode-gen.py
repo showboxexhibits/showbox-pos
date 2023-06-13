@@ -1,5 +1,5 @@
 from barcode import EAN13
-from barcode.writer import SVGWriter
+from barcode.writer import ImageWriter
 from random import randint
 import os, datetime, json, shutil
 
@@ -31,9 +31,9 @@ def barcode_gen(num_barcodes):
     # Generate num barcodes and save them as svg files, starting from 1
     for i in num_barcodes:
         fullname = str(randint(100000000000, 999999999999))
-        barcode_location = f"{output_dir}/{fullname}.svg"
+        barcode_location = f"{output_dir}/{fullname}.png"
         with open(barcode_location, "wb") as f:
-            EAN13(fullname, writer=SVGWriter()).write(f)
+            EAN13(fullname, writer=ImageWriter()).write(f)
         barcode_path.append(barcode_location)
         barcode_value.append(fullname)
         
@@ -64,7 +64,7 @@ def main():
                     price,
                     category,
                     barcode,
-                    barcode_path=f"assets/{name}/{barcode}.svg",
+                    barcode_path=f"assets/{name}/{barcode}.png",
                     image_path=f"assets/{name}.png"
                     )
 
