@@ -2,3 +2,4 @@
 __MACOSX
 *2*
 !.gitignore
+libs/experimental/
