@@ -8,8 +8,9 @@
     a touchscreen interface, rather than a standard keyboard.
 '''
 import sys
+import json
 from PyQt5 import QtWidgets
-from PyQt5.QtWidgets import QMainWindow, QApplication
+from PyQt5.QtWidgets import QMainWindow, QApplication, QLabel, QInputDialog, QLineEdit
 from libs.buttons.button import make_button
 
 def init_buttons(self):
@@ -20,14 +21,27 @@ def init_buttons(self):
     self.checkOutButton = make_button(self, "checkOut")
     self.checkOutButton.clicked.connect(self.check_out)
     self.closeButton = make_button(self, "close")
-    self.closeButton.clicked.connect(self.close_app)         
+    self.closeButton.clicked.connect(self.close_app)
+
+def init_labels(self):
+    pass
+
+
+with open("data.json", "rb") as raw_data:
+    data = json.load(raw_data)
+
 
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
 
-        checked = 0
-        
+        self.lineEdit = QLineEdit()
+        self.lineEdit.setDisabled(False)
+        self.lineEdit.setText('')
+        self.lineEdit.setEchoMode(1)
+        self.startNew=1
+
+        # Window exclusive stuff
         self.setAnimated(True)
         self.setObjectName('MainWindow')
         stylesheet = """
@@ -41,11 +55,33 @@ class MainWindow(QMainWindow):
         self.setStyleSheet(stylesheet)
 
         init_buttons(self)
+        self.itemNamePane = QtWidgets.QLabel()
+        self.itemNamePane.setText("")
+        self.itemNamePane.move(200, 200)
+        self.itemNamePane.resize(300, 100)
+
+        self.lineEdit.returnPressed.connect(self.scan_item)
+        self.lineEdit.textChanged.connect(self.clear_input)
+
+    def scan_item(self):
+        scannerInput = self.lineEdit.text()
+        barcode = ''.join(char for char in scannerInput if char.isdigit())
+        if barcode in data:
+            self.itemNamePane.setText((data[barcode]['name']).upper())
+            print(data[barcode]['name'])
+            self.startNew=1
+        else:
+            self.itemNamePane.setText("Unrecognized Item")
+
+    def clear_input(self, text):
+        if self.startNew:
+            self.lineEdit.setText(text[-1])
+            self.startNew=0
 
     def delete_last(self):
         print("Deleted last")
         self.deleteLastButton.setText("Yeet")
-            
+
     def clear_all(self):
         print("Cleared all")
         self.clearAllButton.setText("Sweet!")
@@ -56,7 +92,7 @@ class MainWindow(QMainWindow):
 
     def close_app(self):
         sys.exit()
-            
+
 
 app = QApplication([])
 
