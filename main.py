@@ -1,12 +1,22 @@
 import sys
 import json
 
-from PyQt5 import QtWidgets, QtGui
+from PyQt5 import QtWidgets, QtGui, QtCore
 from PyQt5.QtGui import QPalette, QBrush
 from libs.buttons.button import make_button
 
 with open("data.json", "r") as f:
     data = json.load(f)
+
+style = """
+            QLabel {
+                color: black;
+                background-color: white;
+                border-style: flat;
+                font-size: 72px;
+                text-align: center;
+            }
+        """
 
 class BackgroundImage(QtWidgets.QFrame):
     def __init__(self, parent=None):
@@ -35,7 +45,11 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.itemScanned = QtWidgets.QLabel(self)
         self.itemScanned.setText(' ')
-        self.itemScanned.setGeometry(20, 100, 200, 200)
+        self.itemScanned.setGeometry(130, 810, 561, 141)
+        self.itemScanned.setStyleSheet(style)
+
+        self.itemScannedImage = QtWidgets.QLabel(self.background)
+        self.itemScannedImage.setGeometry(300, 300, 200, 200)
 
         self.init_buttons()
 
@@ -68,6 +82,10 @@ class MainWindow(QtWidgets.QMainWindow):
         if barcode in data:
             print(data[barcode]['name'])
             self.itemScanned.setText((data[barcode]['name']).upper())
+            self.itemScanned.setStyleSheet(style)
+            pixmap = QtGui.QPixmap(data[barcode]['image_path'])
+            print(data[barcode]['image_path'])
+            self.itemScannedImage.setPixmap(pixmap.scaled(200, 200, QtCore.Qt.KeepAspectRatio))
         else:
             print("Error. Item not registered.")
         self.barcodeInput.clear()
