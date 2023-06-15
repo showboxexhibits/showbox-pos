@@ -1,4 +1,3 @@
-import sys
 from PyQt5 import QtWidgets
 
 def make_button(window, name):
@@ -19,8 +18,7 @@ def make_button(window, name):
     if name == "close":
         b = QtWidgets.QPushButton(window)
         b.setText("Close")
-        b.move(400,400)
-        b.resize(500,500)
+        b.move(0, 0)
         return b
     if name == "checkOut":
         b = QtWidgets.QPushButton(window)
@@ -28,6 +26,19 @@ def make_button(window, name):
         b.move(1445, 789)
         b.resize(376, 186)
         b.setFlat(True)
+        return b
+    if name == "settings":
+        pass
+    if name == "networkConfiguration":
+        pass
+    if name == "updateNow":
+        pass
+    if name == "logSend":
+        pass
+    if name == "secretMenu":
+        b = QtWidgets.QPushButton(window)
+        b.resize(50, 50)
+        b.move(1870, 0)
         return b
     else:
         return "error"

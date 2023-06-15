@@ -1,106 +1,99 @@
-#!/usr/bin/python3
-
-'''
-    Welcome to the main initialization of the point-of-sale register UI by Showbox Exhibits
-
-    This file is intended to be run at boot and used as the primary (only) means of
-    end-user interaction with the machine. This GUI has been designed for use with
-    a touchscreen interface, rather than a standard keyboard.
-'''
 import sys
 import json
-from PyQt5 import QtWidgets
-from PyQt5.QtWidgets import QMainWindow, QApplication, QLabel, QInputDialog, QLineEdit
+
+from PyQt5 import QtWidgets, QtGui
+from PyQt5.QtGui import QPalette, QBrush
 from libs.buttons.button import make_button
 
-def init_buttons(self):
-    self.deleteLastButton = make_button(self, "deleteLast")
-    self.deleteLastButton.clicked.connect(self.delete_last)
-    self.clearAllButton = make_button(self, "clearAll")
-    self.clearAllButton.clicked.connect(self.clear_all)
-    self.checkOutButton = make_button(self, "checkOut")
-    self.checkOutButton.clicked.connect(self.check_out)
-    self.closeButton = make_button(self, "close")
-    self.closeButton.clicked.connect(self.close_app)
+with open("data.json", "r") as f:
+    data = json.load(f)
 
-def init_labels(self):
-    pass
+class BackgroundImage(QtWidgets.QFrame):
+    def __init__(self, parent=None):
+        super().__init__(parent)
 
+        # Pull image
+        self.pixmap = QtGui.QPixmap('assets/main-screen/main-screen.png')
+        self.setAutoFillBackground(True)
 
-with open("data.json", "rb") as raw_data:
-    data = json.load(raw_data)
+    def resizeEvent(self, event):
+        # Resize background when window is altered
+        palette = QtGui.QPalette()
+        brush = QtGui.QBrush(self.pixmap)
+        palette.setBrush(QtGui.QPalette.Background, brush)
+        self.setPalette(palette)
 
-
-class MainWindow(QMainWindow):
+class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__()
+        self.background = BackgroundImage(self)
+        self.background.setGeometry(self.rect())
 
-        self.lineEdit = QLineEdit()
-        self.lineEdit.setDisabled(False)
-        self.lineEdit.setText('')
-        self.lineEdit.setEchoMode(1)
-        self.startNew=1
+        self.barcodeInput = QtWidgets.QLineEdit(self)
+        self.barcodeInput.setGeometry(10, 10, 200, 40)
+        self.barcodeInput.returnPressed.connect(self.scan_item)
 
-        # Window exclusive stuff
-        self.setAnimated(True)
-        self.setObjectName('MainWindow')
-        stylesheet = """
-    #MainWindow{
-        background-image: url(assets/main-screen/main-screen.png);
-        background-repeat: no-repeat;
-        background-position: center;
-    }
-        """
+        self.itemScanned = QtWidgets.QLabel(self)
+        self.itemScanned.setText(' ')
+        self.itemScanned.setGeometry(20, 100, 200, 200)
 
-        self.setStyleSheet(stylesheet)
+        self.init_buttons()
 
-        init_buttons(self)
-        self.itemNamePane = QtWidgets.QLabel()
-        self.itemNamePane.setText("")
-        self.itemNamePane.move(200, 200)
-        self.itemNamePane.resize(300, 100)
+        self.background.lower()
+        self.setCentralWidget(self.background)
 
-        self.lineEdit.returnPressed.connect(self.scan_item)
-        self.lineEdit.textChanged.connect(self.clear_input)
+    def resizeEvent(self, event):
+        self.background.setGeometry(self.rect())
+        super().resizeEvent(event)
+
+    def init_buttons(self):
+        # Create button
+        self.deleteLastButton = make_button(self, "deleteLast")
+        self.clearAllButton   = make_button(self, "clearAll")
+        self.checkOutButton   = make_button(self, "checkOut")
+        self.closeButton      = make_button(self, "close")
+        self.secretMenuButton = make_button(self, "secretMenu")
+
+        # Map button function
+        self.deleteLastButton.clicked.connect(self.delete_last)
+        self.clearAllButton.clicked.connect(self.clear_all)
+        self.checkOutButton.clicked.connect(self.check_out)
+        self.closeButton.clicked.connect(self.close_app)
+        self.secretMenuButton.clicked.connect(self.activate_secret_menu)
 
     def scan_item(self):
-        scannerInput = self.lineEdit.text()
+        scannerInput = self.barcodeInput.text()
         barcode = ''.join(char for char in scannerInput if char.isdigit())
+        print(f"User entered: {barcode}")
         if barcode in data:
-            self.itemNamePane.setText((data[barcode]['name']).upper())
             print(data[barcode]['name'])
-            self.startNew=1
+            self.itemScanned.setText((data[barcode]['name']).upper())
         else:
-            self.itemNamePane.setText("Unrecognized Item")
-
-    def clear_input(self, text):
-        if self.startNew:
-            self.lineEdit.setText(text[-1])
-            self.startNew=0
+            print("Error. Item not registered.")
+        self.barcodeInput.clear()
 
     def delete_last(self):
-        print("Deleted last")
-        self.deleteLastButton.setText("Yeet")
+        pass
 
     def clear_all(self):
-        print("Cleared all")
-        self.clearAllButton.setText("Sweet!")
+        pass
 
     def check_out(self):
-        print("Checked out")
-        self.checkOutButton.setText("All donezo")
+        pass
 
     def close_app(self):
         sys.exit()
 
+    def activate_secret_menu(self):
+        pass
 
-app = QApplication([])
+def main():
+    app = QtWidgets.QApplication([])
+    window = MainWindow()
+    window.showFullScreen()
+    window.show()
 
-# Assigning the MainWindow to a variable and calling .show() draws the window on screen.
-window = MainWindow()
-window.setGeometry(0,0,800,800)
-window.showFullScreen()
-window.show()
+    app.exec_()
 
-# Finally, after all assignments have been made, the app is executed.
-app.exec_()
+if __name__ == '__main__':
+    main()
