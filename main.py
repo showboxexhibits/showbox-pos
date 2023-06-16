@@ -55,9 +55,11 @@ class BackgroundImage(QtWidgets.QFrame):
         self.setPalette(palette)
 
 class MainWindow(QtWidgets.QMainWindow):
-    def __init__(self):
+    def __init__(self, data):
         super().__init__()
+        self.data = data
         self.itemData = []
+        self.tableItems = []
         self.background = BackgroundImage(self)
         self.background.setGeometry(self.rect())
 
@@ -115,10 +117,10 @@ class MainWindow(QtWidgets.QMainWindow):
         scannerInput = self.barcodeInput.text()
         barcode = ''.join(char for char in scannerInput if char.isdigit())
         logging.debug(f'Input modified from {scannerInput} -> {barcode}')
-        if barcode in data:
-            item_name = data[barcode]['name']
-            path = data[barcode]['image_path']
-            price = data[barcode]['price']
+        if barcode in self.data:
+            item_name = self.data[barcode]['name']
+            path = self.data[barcode]['image_path']
+            price = self.data[barcode]['price']
             logging.debug(f'Barcode scanned: {barcode} :: Item name: {item_name}')
             try:
                 pixmap = QtGui.QPixmap(path)
@@ -146,8 +148,8 @@ class MainWindow(QtWidgets.QMainWindow):
                 old_price_item = self.itemTableModel.item(row, column=2)
                 logging.debug(f"Old Quantity Item: {old_qty_item}")
                 logging.debug(f"Old Price Item: {old_price_item}")
-                old_qty = old_qty_item.data()
-                old_price = old_price_item.data()
+                old_qty = old_qty_item.data(Qt.DisplayRole)
+                old_price = old_price_item.data(Qt.DisplayRole)
                 logging.debug(f"Old Qty Data: {old_qty}")
                 logging.debug(f"Old Price Data:{old_price}")
                 new_qty = QtGui.QStandardItem(str(int(old_qty) + 1))
@@ -161,13 +163,19 @@ class MainWindow(QtWidgets.QMainWindow):
         return False
 
     def insert_row(self, itemData):
+        self.log_table_state()
         row = self.itemTableModel.rowCount()
+        items = []
         self.itemTableModel.insertRow(row)
         for column, value in enumerate(itemData):
             item = QtGui.QStandardItem(str(value))
+            item.setData(str(value), Qt.DisplayRole)
             self.set_font(item)
             self.itemTableModel.setItem(row, column, item)
+            items.append(item)
+        self.tableItems.append(items)
         logging.debug(f"Added to table: {itemData}")
+        self.log_table_state()
 
     def delete_last(self):
         pass
@@ -184,9 +192,15 @@ class MainWindow(QtWidgets.QMainWindow):
     def activate_secret_menu(self):
         pass
 
+    def log_table_state(self):
+        for row, items in enumerate(self.tableItems):
+            row_data = [item.data() for item in items]
+            logging.debug(f"Row {row} data: {row_data}")
+
+
 def main():
     app = QtWidgets.QApplication([])
-    window = MainWindow()
+    window = MainWindow(data)
     window.showFullScreen()
     window.show()
 
