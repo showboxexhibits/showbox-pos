@@ -70,8 +70,8 @@ def main():
 
 
         # Add the item to the complete inventory
-        complete_inventory[item.name] = {
-            "barcode": item.barcode,
+        complete_inventory[item.barcode] = {
+            "name": item.name,
             "barcode_path": item.barcode_path,
             "category": item.category,
             "image_path": item.image_path,

@@ -1,30 +1,117 @@
-#!/usr/bin/python3
+import sys
+import json
 
-'''
-    Welcome to the main initialization of the point-of-sale register UI by Showbox Exhibits
+from PyQt5 import QtWidgets, QtGui, QtCore
+from PyQt5.QtGui import QPalette, QBrush
+from libs.buttons.button import make_button
 
-    This file is intended to be run at boot and used as the primary (only) means of
-    end-user interaction with the machine. This GUI has been designed for use with
-    a touchscreen interface, rather than a standard keyboard.
-'''
+with open("data.json", "r") as f:
+    data = json.load(f)
 
-import os
-from PyQt5 import QtWidgets
-from PyQt5.QtWidgets import QMainWindow, QApplication
+style = """
+            QLabel {
+                color: black;
+                background-color: white;
+                border-style: flat;
+                font-size: 72px;
+                text-align: center;
+            }
+        """
 
-def init_buttons():
-    pass    
+class BackgroundImage(QtWidgets.QFrame):
+    def __init__(self, parent=None):
+        super().__init__(parent)
 
-class MainWindow(QMainWindow):
+        # Pull image
+        self.pixmap = QtGui.QPixmap('assets/main-screen/main-screen.png')
+        self.setAutoFillBackground(True)
+
+    def resizeEvent(self, event):
+        # Resize background when window is altered
+        palette = QtGui.QPalette()
+        brush = QtGui.QBrush(self.pixmap)
+        palette.setBrush(QtGui.QPalette.Background, brush)
+        self.setPalette(palette)
+
+class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__()
+        self.background = BackgroundImage(self)
+        self.background.setGeometry(self.rect())
 
+        self.barcodeInput = QtWidgets.QLineEdit(self)
+        self.barcodeInput.setGeometry(10, 10, 200, 40)
+        self.barcodeInput.returnPressed.connect(self.scan_item)
 
-app = QApplication([])
+        self.itemScanned = QtWidgets.QLabel(self)
+        self.itemScanned.setText(' ')
+        self.itemScanned.setGeometry(130, 810, 561, 141)
+        self.itemScanned.setStyleSheet(style)
 
-# Assigning the MainWindow to a variable and calling .show() draws the window on screen.
-window = MainWindow()
-window.show()
+        self.itemScannedImage = QtWidgets.QLabel(self.background)
+        self.itemScannedImage.setGeometry(300, 300, 200, 200)
 
-# Finally, after all assignments have been made, the app is executed.
-app.exec_()
+        self.init_buttons()
+
+        self.background.lower()
+        self.setCentralWidget(self.background)
+
+    def resizeEvent(self, event):
+        self.background.setGeometry(self.rect())
+        super().resizeEvent(event)
+
+    def init_buttons(self):
+        # Create button
+        self.deleteLastButton = make_button(self, "deleteLast")
+        self.clearAllButton   = make_button(self, "clearAll")
+        self.checkOutButton   = make_button(self, "checkOut")
+        self.closeButton      = make_button(self, "close")
+        self.secretMenuButton = make_button(self, "secretMenu")
+
+        # Map button function
+        self.deleteLastButton.clicked.connect(self.delete_last)
+        self.clearAllButton.clicked.connect(self.clear_all)
+        self.checkOutButton.clicked.connect(self.check_out)
+        self.closeButton.clicked.connect(self.close_app)
+        self.secretMenuButton.clicked.connect(self.activate_secret_menu)
+
+    def scan_item(self):
+        scannerInput = self.barcodeInput.text()
+        barcode = ''.join(char for char in scannerInput if char.isdigit())
+        print(f"User entered: {barcode}")
+        if barcode in data:
+            print(data[barcode]['name'])
+            self.itemScanned.setText((data[barcode]['name']).upper())
+            self.itemScanned.setStyleSheet(style)
+            pixmap = QtGui.QPixmap(data[barcode]['image_path'])
+            print(data[barcode]['image_path'])
+            self.itemScannedImage.setPixmap(pixmap.scaled(200, 200, QtCore.Qt.KeepAspectRatio))
+        else:
+            print("Error. Item not registered.")
+        self.barcodeInput.clear()
+
+    def delete_last(self):
+        pass
+
+    def clear_all(self):
+        pass
+
+    def check_out(self):
+        pass
+
+    def close_app(self):
+        sys.exit()
+
+    def activate_secret_menu(self):
+        pass
+
+def main():
+    app = QtWidgets.QApplication([])
+    window = MainWindow()
+    window.showFullScreen()
+    window.show()
+
+    app.exec_()
+
+if __name__ == '__main__':
+    main()
