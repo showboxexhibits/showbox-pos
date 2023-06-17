@@ -33,11 +33,16 @@ with open("data.json", "r") as f:
 style = """
                 color: black;
                 background-color: white;
-                border-style: solid;
-                border-color: red;
+                border-style: flat;
+                border-color: white;
                 border-width: 5px;
                 font-size: 72px;
         """
+
+class AlwaysFocusedLineEdit(QtWidgets.QLineEdit):
+    def focusOutEvent(self, e):
+        super().focusOutEvent(e)
+        QtCore.QTimer.singleShot(0, self.setFocus)
 
 class BackgroundImage(QtWidgets.QFrame):
     def __init__(self, parent=None):
@@ -54,6 +59,46 @@ class BackgroundImage(QtWidgets.QFrame):
         palette.setBrush(QtGui.QPalette.Background, brush)
         self.setPalette(palette)
 
+class CheckOutWindow(QtWidgets.QDialog):
+    windowClosed = QtCore.pyqtSignal()
+    
+    def __init__(self, price, parent=None):
+        super().__init__(parent)
+
+        
+        self.price = price
+
+        self.setGeometry(560, 140, 400, 400)
+        self.setWindowTitle('Checkout Window')
+
+        self.message = QtWidgets.QLabel(self)
+        self.message.setText("Thank you for shopping with us!")
+        self.message.setGeometry(0, 0, 200, 150)
+
+        self.total_price = QtWidgets.QLabel(self)
+        self.total_price.setText(self.price)
+        self.total_price.setGeometry(50, 250, 200, 150)
+
+        self.close_button = QtWidgets.QPushButton("Close", self)
+        self.close_button.setGeometry(50, 400, 100, 75)
+        self.close_button.clicked.connect(self.close_checkout_window)
+        
+        self.layout = QtWidgets.QVBoxLayout(self)
+        self.layout.addWidget(self.message)
+        self.layout.addWidget(self.total_price)
+        self.layout.addWidget(self.close_button)
+        self.setLayout(self.layout)
+        
+        self.hide()
+
+    def open_checkout_window(self, price):
+        self.total_price.setText(price)
+        self.show()
+
+    def close_checkout_window(self):
+        self.hide()
+        self.windowClosed.emit()
+
 class MainWindow(QtWidgets.QMainWindow):
     def __init__(self, data):
         super().__init__()
@@ -62,8 +107,20 @@ class MainWindow(QtWidgets.QMainWindow):
         self.itemData = []
         self.background = BackgroundImage(self)
         self.background.setGeometry(self.rect())
+        self.scanIndicator = QtWidgets.QLabel(self)
+        self.scanIndicator.setStyleSheet("""
+        color: red;
+        border-style: flat;
+        border-width: 5px;
+        font-size: 36px;
+        """)
+        self.scanIndicator.setGeometry(170, 720, 561, 50)
+        self.scanIndicator.setText("Scanning.")
+        self.scanIndicatorTimer = QtCore.QTimer()
+        self.scanIndicatorTimer.timeout.connect(self.scanning_indicator)
+        self.scanIndicatorTimer.start(1000)
 
-        self.barcodeInput = QtWidgets.QLineEdit(self)
+        self.barcodeInput = AlwaysFocusedLineEdit(self)
         self.barcodeInput.setGeometry(10, 10, 200, 40)
         self.barcodeInput.returnPressed.connect(self.scan_item)
 
@@ -73,25 +130,56 @@ class MainWindow(QtWidgets.QMainWindow):
         self.itemScanned.setGeometry(130, 810, 561, 141)
 
         self.itemScannedImage = QtWidgets.QLabel(self.background)
-        self.itemScannedImage.setGeometry(300, 300, 200, 200)
+        self.itemScannedImage.setGeometry(60, 130, 561, 561)
 
         self.itemTable = QtWidgets.QTableView(self)
-        self.itemTable.setGeometry(830, 130, 941, 461)
-        self.itemTable.resizeColumnsToContents()
-        self.itemTable.resizeRowsToContents()
+        self.itemTable.setGeometry(830, 130, 954, 461)
         self.itemTableModel = QtGui.QStandardItemModel(self)
-        self.itemTableModel.setHorizontalHeaderLabels(["Qty.", "Name", "Price"])
         self.itemTable.setModel(self.itemTableModel)
+        self.set_table_to_default()
 
         self.totalPrice = QtWidgets.QLabel(self)
         self.totalPrice.setStyleSheet(style)
         self.totalPrice.setAlignment(Qt.AlignCenter)
         self.totalPrice.setGeometry(1480, 610, 291, 80)
+        self.totalPrice.setText("$0.00")
+
+        self.checkOutWindow = CheckOutWindow(price=self.totalPrice.text())
+        self.checkOutWindow.windowClosed.connect(self.clear_all)
+        self.checkOutWindow.windowClosed.connect(self.enable_main_window)
 
         self.init_buttons()
 
         self.background.lower()
         self.setCentralWidget(self.background)
+
+    def scanning_indicator(self):
+        text = self.scanIndicator.text()
+        if text == 'Scanning...':
+            self.scanIndicator.setText('Scanning.')
+        else:
+            self.scanIndicator.setText(text + '.')
+
+    def disable_main_window(self):
+        self.setEnabled(False)
+
+    def enable_main_window(self):
+        self.setEnabled(True)
+        self.barcodeInput.clear()
+        self.barcodeInput.setFocus()
+
+    def set_table_to_default(self):
+        self.itemTableModel.setHorizontalHeaderLabels(["Qty.", "Name", "Price"])
+        self.itemTable.setColumnWidth(0, 50)
+        self.itemTable.setColumnWidth(1, 671)
+        self.itemTable.setColumnWidth(2, 200)
+        self.itemTable.setStyleSheet("""
+        background-color: white;
+        selection-background-color: #999999;
+        color: black;
+        """)
+        self.itemTable.setSelectionMode(QtWidgets.QAbstractItemView.NoSelection)
+        self.itemTable.setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
 
     def set_font(self, index):
         font = QtGui.QFont()
@@ -135,7 +223,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 pass
             self.itemScanned.setText(item_name.upper())
             self.itemScanned.setStyleSheet(style)
-            itemData = [str(1), str(item_name), str(price)]
+            itemData = [str(1), str(item_name).title(), str(price)]
             self.scannedItems.append(itemData)
             if self.item_exists(itemData):
                 pass
@@ -184,6 +272,9 @@ class MainWindow(QtWidgets.QMainWindow):
             price_index = self.itemTableModel.item(row, column=2)
             total += round(float(price_index.data(Qt.DisplayRole)), 2)
         self.totalPrice.setText(f"${total:.2f}")
+        if int(total) == 0:
+            self.itemScanned.clear()
+            self.itemScannedImage.clear()
 
     def delete_last(self):
         if self.scannedItems:
@@ -209,11 +300,17 @@ class MainWindow(QtWidgets.QMainWindow):
                         self.itemTableModel.setItem(row, 0, new_qty)
                         self.itemTableModel.setItem(row, 2, new_price)
                     self.update_total()
+
     def clear_all(self):
-        pass
+        self.itemTableModel.clear()
+        self.set_table_to_default()
+        self.totalPrice.setText("$0.00")
+        self.itemScanned.clear()
+        self.itemScannedImage.clear()
 
     def check_out(self):
-        pass
+        self.disable_main_window()
+        self.checkOutWindow.open_checkout_window(self.totalPrice.text())
 
     def close_app(self):
         sys.exit()
