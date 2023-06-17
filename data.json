@@ -35,10 +35,10 @@
         "price": "7.99"
     },
     "8347414606186": {
-        "name": "macncheese",
-        "barcode_path": "assets/macncheese/8347414606186.png",
+        "name": "mac-n-cheese",
+        "barcode_path": "assets/mac-n-cheese/8347414606186.png",
         "category": "dry good",
-        "image_path": "assets/macncheese/macncheese.png",
+        "image_path": "assets/mac-n-cheese/mac-n-cheese.png",
         "price": "4.49"
     },
     "9178776052408": {
