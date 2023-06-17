@@ -57,9 +57,9 @@ class BackgroundImage(QtWidgets.QFrame):
 class MainWindow(QtWidgets.QMainWindow):
     def __init__(self, data):
         super().__init__()
+        self.scannedItems = []
         self.data = data
         self.itemData = []
-        self.tableItems = []
         self.background = BackgroundImage(self)
         self.background.setGeometry(self.rect())
 
@@ -82,6 +82,11 @@ class MainWindow(QtWidgets.QMainWindow):
         self.itemTableModel = QtGui.QStandardItemModel(self)
         self.itemTableModel.setHorizontalHeaderLabels(["Qty.", "Name", "Price"])
         self.itemTable.setModel(self.itemTableModel)
+
+        self.totalPrice = QtWidgets.QLabel(self)
+        self.totalPrice.setStyleSheet(style)
+        self.totalPrice.setAlignment(Qt.AlignCenter)
+        self.totalPrice.setGeometry(1480, 610, 291, 80)
 
         self.init_buttons()
 
@@ -131,6 +136,7 @@ class MainWindow(QtWidgets.QMainWindow):
             self.itemScanned.setText(item_name.upper())
             self.itemScanned.setStyleSheet(style)
             itemData = [str(1), str(item_name), str(price)]
+            self.scannedItems.append(itemData)
             if self.item_exists(itemData):
                 pass
             else:
@@ -146,18 +152,15 @@ class MainWindow(QtWidgets.QMainWindow):
             if self.itemTableModel.data(index) == itemData[1]:
                 old_qty_item = self.itemTableModel.item(row, column=0)
                 old_price_item = self.itemTableModel.item(row, column=2)
-                logging.debug(f"Old Quantity Item: {old_qty_item}")
-                logging.debug(f"Old Price Item: {old_price_item}")
                 old_qty = old_qty_item.data(Qt.DisplayRole)
                 old_price = old_price_item.data(Qt.DisplayRole)
-                logging.debug(f"Old Qty Data: {old_qty}")
-                logging.debug(f"Old Price Data:{old_price}")
                 new_qty = QtGui.QStandardItem(str(int(old_qty) + 1))
                 self.set_font(new_qty)
-                new_price = QtGui.QStandardItem(str(float(old_price) + float(itemData[2])))
+                new_price = QtGui.QStandardItem(str(round(float(old_price) + float(itemData[2]), 2)))
                 self.set_font(new_price)
                 self.itemTableModel.setItem(row, 0, new_qty)
                 self.itemTableModel.setItem(row, 2, new_price)
+                self.update_total()
                 logging.debug(f"Changed table values according to {itemData}")
                 return True
         return False
@@ -165,21 +168,47 @@ class MainWindow(QtWidgets.QMainWindow):
     def insert_row(self, itemData):
         self.log_table_state()
         row = self.itemTableModel.rowCount()
-        items = []
         self.itemTableModel.insertRow(row)
         for column, value in enumerate(itemData):
             item = QtGui.QStandardItem(str(value))
             item.setData(str(value), Qt.DisplayRole)
             self.set_font(item)
             self.itemTableModel.setItem(row, column, item)
-            items.append(item)
-        self.tableItems.append(items)
+        self.update_total()
         logging.debug(f"Added to table: {itemData}")
         self.log_table_state()
 
-    def delete_last(self):
-        pass
+    def update_total(self):
+        total = 0
+        for row in range(self.itemTableModel.rowCount()):
+            price_index = self.itemTableModel.item(row, column=2)
+            total += round(float(price_index.data(Qt.DisplayRole)), 2)
+        self.totalPrice.setText(f"${total:.2f}")
 
+    def delete_last(self):
+        if self.scannedItems:
+            lastItem = self.scannedItems.pop()
+            lastItemName = lastItem[1]
+            lastItemPrice = lastItem[2]
+            for row in range(self.itemTableModel.rowCount()):
+                index = self.itemTableModel.index(row, 1)
+                if self.itemTableModel.data(index) == lastItemName:
+                    old_qty_item = self.itemTableModel.item(row, column=0)
+                    old_price_item = self.itemTableModel.item(row, column=2)
+                    old_qty = old_qty_item.data(Qt.DisplayRole)
+                    old_price = old_price_item.data(Qt.DisplayRole)
+                    new_qty_val = int(old_qty) - 1
+                    new_price_val = round(float(old_price) - float(lastItemPrice), 2)
+                    if new_qty_val == 0:
+                        self.itemTableModel.removeRow(row)
+                    else:
+                        new_qty = QtGui.QStandardItem(str(new_qty_val))
+                        new_price = QtGui.QStandardItem(str(f"{new_price_val:.2f}"))
+                        self.set_font(new_qty)
+                        self.set_font(new_price)
+                        self.itemTableModel.setItem(row, 0, new_qty)
+                        self.itemTableModel.setItem(row, 2, new_price)
+                    self.update_total()
     def clear_all(self):
         pass
 
@@ -193,8 +222,8 @@ class MainWindow(QtWidgets.QMainWindow):
         pass
 
     def log_table_state(self):
-        for row, items in enumerate(self.tableItems):
-            row_data = [item.data() for item in items]
+        for row in range(self.itemTableModel.rowCount()):
+            row_data = [self.itemTableModel.item(row, column).data(Qt.DisplayRole) for column in range(self.itemTableModel.columnCount())]
             logging.debug(f"Row {row} data: {row_data}")
 
 
