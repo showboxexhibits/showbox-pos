@@ -1,3 +1,5 @@
+#!/home/pos/showbox-pos/venv/bin/python3
+
 import sys
 import json
 import logging
@@ -8,7 +10,7 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPalette, QBrush
 from libs.buttons.button import make_button
 from version import get_version
-
+'''
 def touch(logpath):
     with open(logpath, 'w'):
         os.utime(logpath, None)
@@ -25,6 +27,10 @@ logging.basicConfig(level=logging.DEBUG,
 version_number = get_version()
 logging.info('--- Application boot ---\n\nMOTD: \n-----\n"Welcome to ShowBox Exhibits POS System"\n-----\n')
 logging.info(f'Version number {version_number} loaded')
+'''
+
+script_dir = os.path.dirname(os.path.abspath(__file__))
+os.chdir(script_dir)
 
 with open("data.json", "r") as f:
     data = json.load(f)
@@ -102,11 +108,13 @@ class CheckOutWindow(QtWidgets.QDialog):
 class MainWindow(QtWidgets.QMainWindow):
     def __init__(self, data):
         super().__init__()
+        self.closeInt = 0
         self.scannedItems = []
         self.data = data
         self.itemData = []
         self.background = BackgroundImage(self)
         self.background.setGeometry(self.rect())
+        '''
         self.scanIndicator = QtWidgets.QLabel(self)
         self.scanIndicator.setStyleSheet("""
         color: red;
@@ -119,10 +127,12 @@ class MainWindow(QtWidgets.QMainWindow):
         self.scanIndicatorTimer = QtCore.QTimer()
         self.scanIndicatorTimer.timeout.connect(self.scanning_indicator)
         self.scanIndicatorTimer.start(1000)
+        '''
 
         self.barcodeInput = AlwaysFocusedLineEdit(self)
         self.barcodeInput.setGeometry(10, 10, 200, 40)
         self.barcodeInput.returnPressed.connect(self.scan_item)
+        self.barcodeInput.setGeometry(0, 0, 1, 1)
 
         self.itemScanned = QtWidgets.QLabel(self)
         self.itemScanned.setStyleSheet(style)
@@ -144,22 +154,24 @@ class MainWindow(QtWidgets.QMainWindow):
         self.totalPrice.setGeometry(1480, 610, 291, 80)
         self.totalPrice.setText("$0.00")
 
+        '''
         self.checkOutWindow = CheckOutWindow(price=self.totalPrice.text())
         self.checkOutWindow.windowClosed.connect(self.clear_all)
         self.checkOutWindow.windowClosed.connect(self.enable_main_window)
+        '''
 
         self.init_buttons()
 
         self.background.lower()
         self.setCentralWidget(self.background)
-
+    '''
     def scanning_indicator(self):
         text = self.scanIndicator.text()
         if text == 'Scanning...':
             self.scanIndicator.setText('Scanning.')
         else:
             self.scanIndicator.setText(text + '.')
-
+    '''
     def disable_main_window(self):
         self.setEnabled(False)
 
@@ -183,7 +195,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def set_font(self, index):
         font = QtGui.QFont()
-        font.setPointSize(18)
+        font.setPointSize(28)
         index.setFont(font)
 
     def resizeEvent(self, event):
@@ -196,30 +208,31 @@ class MainWindow(QtWidgets.QMainWindow):
         self.clearAllButton   = make_button(self, "clearAll")
         self.checkOutButton   = make_button(self, "checkOut")
         self.closeButton      = make_button(self, "close")
-        self.secretMenuButton = make_button(self, "secretMenu")
+        #self.secretMenuButton = make_button(self, "secretMenu")
 
         # Map button function
         self.deleteLastButton.clicked.connect(self.delete_last)
         self.clearAllButton.clicked.connect(self.clear_all)
         self.checkOutButton.clicked.connect(self.check_out)
         self.closeButton.clicked.connect(self.close_app)
-        self.secretMenuButton.clicked.connect(self.activate_secret_menu)
+        self.closeButton.setStyleSheet("background-color: transparent; border: none;")
+        #self.secretMenuButton.clicked.connect(self.activate_secret_menu)
 
     def scan_item(self):
-        logging.debug(f'Recieved input: {self.barcodeInput.text()}')
+        # logging.debug(f'Recieved input: {self.barcodeInput.text()}')
         scannerInput = self.barcodeInput.text()
         barcode = ''.join(char for char in scannerInput if char.isdigit())
-        logging.debug(f'Input modified from {scannerInput} -> {barcode}')
+        # logging.debug(f'Input modified from {scannerInput} -> {barcode}')
         if barcode in self.data:
             item_name = self.data[barcode]['name']
             path = self.data[barcode]['image_path']
             price = self.data[barcode]['price']
-            logging.debug(f'Barcode scanned: {barcode} :: Item name: {item_name}')
+            #logging.debug(f'Barcode scanned: {barcode} :: Item name: {item_name}')
             try:
                 pixmap = QtGui.QPixmap(path)
                 self.itemScannedImage.setPixmap(pixmap.scaled(700, 700, QtCore.Qt.KeepAspectRatio))
             except Exception:
-                logging.warning(f'Image could not be found for {barcode} :: {item_name}')
+                #logging.warning(f'Image could not be found for {barcode} :: {item_name}')
                 pass
             self.itemScanned.setText(item_name.upper())
             self.itemScanned.setStyleSheet(style)
@@ -229,9 +242,10 @@ class MainWindow(QtWidgets.QMainWindow):
                 pass
             else:
                 self.insert_row(itemData)
-            logging.info(f'Successful scan flow achieved: {barcode} :: {item_name}')
+            # logging.info(f'Successful scan flow achieved: {barcode} :: {item_name}')
         else:
-            logging.warning(f'Unrecgonized barcode: "{barcode}"')
+            # logging.warning(f'Unrecgonized barcode: "{barcode}"')
+            print("Nice")
         self.barcodeInput.clear()
 
     def item_exists(self, itemData):
@@ -262,6 +276,7 @@ class MainWindow(QtWidgets.QMainWindow):
             item.setData(str(value), Qt.DisplayRole)
             self.set_font(item)
             self.itemTableModel.setItem(row, column, item)
+        self.itemTable.verticalHeader().setDefaultSectionSize(30)
         self.update_total()
         logging.debug(f"Added to table: {itemData}")
         self.log_table_state()
@@ -309,11 +324,17 @@ class MainWindow(QtWidgets.QMainWindow):
         self.itemScannedImage.clear()
 
     def check_out(self):
+        self.clear_all()
+        '''
         self.disable_main_window()
         self.checkOutWindow.open_checkout_window(self.totalPrice.text())
+        '''
 
     def close_app(self):
-        sys.exit()
+        if self.closeInt < 3:
+            self.closeInt += 1
+        else:
+            sys.exit()
 
     def activate_secret_menu(self):
         pass
@@ -326,6 +347,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
 def main():
     app = QtWidgets.QApplication([])
+    app.setOverrideCursor(Qt.BlankCursor)
     window = MainWindow(data)
     window.showFullScreen()
     window.show()
